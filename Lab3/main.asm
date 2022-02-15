@@ -23,14 +23,10 @@ ROMStart    EQU  $4000  ; absolute address to place my code/constant data
 
             ORG RAMStart
  ; Insert here your data definition.
- ORG $3000
-operandA: DC.B $9C ;operandA is a meaningful name of the memory address $3000
-operandB: DC.B $B5 ;operandB is a meaningful name of the memory address $3001
-Result1: DS.B 1 ;Result1 is a meaningful name of the memory address $3002
-operandC: DC.B $3E ;operandC is a meaningful name of the memory address $3003
-operandD: DC.B $F7 ;operandD is a meaningful name of the memory address $3004
-Result2: DS.B 1 ;Result2 is a meaningful name of the memory address $3005
-
+            ORG $1000
+Length:     DC.B 8
+Array:      DC.B 19,15,20,17,12,16,15, 10
+Sum:        DS.B 1
 
 ; code section
             ORG   ROMStart
@@ -40,12 +36,13 @@ Entry:
 _Startup:
             LDS   #RAMEnd+1       ; initialize the stack pointer
             ORG $4100
-            LDAA operandA
-            LDAB operandB
-            ABA
-            STAA Result1
-            LDAA operandC
-            LDAB operandD
-            SBA
-            STAA Result2
+            CLRA
+            LDX #Array
+            LDAB Length
+beginLoop:  BEQ endLoop
+            ADDA 0,X
+            INX
+            DECB
+            BRA beginLoop
+endLoop:    STAA Sum
 endmain:    BRA endmain
