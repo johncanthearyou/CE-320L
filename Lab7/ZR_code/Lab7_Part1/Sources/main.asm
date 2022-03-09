@@ -75,7 +75,9 @@ BCDLoop:    LDX #10
             LDY #LED_Data
               LEDLoop: 
                 LDAA X
-                LDAB  Y+A
+                LDAB A,Y
+                STAB PORTB
+                MOVB 4,X, PTP
                 
                 PSHY
                 LDY #1

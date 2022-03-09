@@ -8732,3 +8732,45 @@ BCDLoop:    LDX #10
             CPD $00
             BNE BCDLoop
             MOVB  $00, BCDNum
+            ;part 3
+            BSET DDRB, %11111111 
+            BSET DDRJ, %00000010
+            BSET DDRP, %00001111
+            
+            BSET PTJ, %00000010 ; Disable eight flashing LEDs
+            Forever: LDX #BCDNum
+            LDY #LED_Data
+              LEDLoop: 
+                LDAA X
+                LDAB A,Y
+                STAB PORTB
+                MOVB 4,X, PTP
+                
+                PSHY
+                LDY #1
+                JSR Delay
+                PULY
+                INX
+                CPX #BCDNum+4
+                BLO LEDLoop
+
+            BRA Forever
+            
+Delay: PSHX
+
+       OuterLoop: LDX #1000
+
+                  InnerLoop: PSHA
+                             PULA
+                             PSHA
+                             PULA
+                             PSHA
+                             PULA
+                             PSHA
+                             PULA 
+                             nop
+                             DBNE X, InnerLoop
+      
+       DBNE Y,OuterLoop
+       PULX
+       RTS 
