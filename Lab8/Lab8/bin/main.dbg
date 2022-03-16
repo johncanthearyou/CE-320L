@@ -8708,7 +8708,7 @@ LED_Data:    DC.B $3F, $06, $5B, $4F, $66, $6D, $7D, $07, $7F, $6F
 
 ;d)	Interrupt Vector Address and Interrupt Vector
          ORG	   $FFCC                         ; $FFCC is a Push button interrupt vector address
-
+         DC.W   ISR_PSHBUTTN
         ;************** complete Here ***************
         ; Provide your Interrupt Vector ( It holds the starting address of your interrupt routine )
 
@@ -8758,22 +8758,20 @@ _Startup:
             
            ;3)	Disable flashing LEDs by setting a value 1 in Bit 1 in PORT J.	
             BSET PTJ, %00000010
-            
-            
 
            ;4) Enable PORT H interrupt Enable Bits (PIEH) for Button 0 , Button 1, and Button2
 
             BSET  PIEH, %00000111
-	          
+	                                                                                                                                                           
 	          
 	          
 	          
            ;5) Intialize the number to dispaly: '0 0 0 0'
           
-             CLR   BCDNum
-             CLR   BCDNum+1
-             CLR   BCDNum+2
-             CLR   BCDNum+3
+             MOVB   #$00,   BCDNum
+             MOVB   #$00,   BCDNum+1
+             MOVB   #$00,   BCDNum+2
+             MOVB   #$00,   BCDNum+3
              
              
              
@@ -8844,19 +8842,19 @@ CHKButton1:
             LDAB  BCDNum+3
             JSR DECNum
             STAB  BCDNum+3
-            CMPB #09
+            CMPB #9
             LBNE Done         
          
             LDAB  BCDNum+2
             JSR DECNum
             STAB  BCDNum+2
-            CMPB #09
+            CMPB #9
             LBNE Done          
          
             LDAB  BCDNum+1
             JSR DECNum
             STAB  BCDNum+1
-            CMPB #09
+            CMPB #9
             LBNE Done          
          
             LDAB  BCDNum
@@ -8867,8 +8865,7 @@ CHKButton1:
 
 CHKButton2:   
             LDY #20
-            JSR Delay_Yms
-            BSET PIFH, %00000010      
+            JSR Delay_Yms      
             BSET PIFH, %00000100 
             CLR   BCDNum
             CLR   BCDNum+1
